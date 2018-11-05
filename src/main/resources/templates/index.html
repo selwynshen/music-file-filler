@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <!-- CSS -->
+    <link href="/lib/bootstrap/bootstrap.css" rel="stylesheet">
+	<link href="/lib/bootstrap/bootstrap-panel.css" rel="stylesheet">
+    <link href="/lib/bootstrap/bootstrap-responsive.css" rel="stylesheet">
+    
+    <link href="/css/bootstrap-extra.css" rel="stylesheet">
+  </head>
+
+  <body>
+     <!-- Part 1: Wrap all page content here -->
+    <div id="wrap">
+      <!-- Fixed navbar -->
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="#">Music File Name Tools</a>
+            <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li><a href="">Home</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div><!-- container -->
+        </div>
+       </div>
+       
+       <!-- Begin page content -->
+       <div class="container">
+         <div class="page-header">
+          
+         </div>
+         <div class="content" style="margin-bottom: 100px;">
+            <div id="contentDiv">
+				<div class="panel panel-info">
+				  <div class="panel-heading">音频文件重命名（歌手名-歌曲名）</div>
+				  <div class="panel-body">
+				  
+					<div class="form-group">
+					  <label for="directory">目录地址</label>
+					  <input type="text" class="form-control" id="directory"
+						 placeholder="请输入要扫描的目录" value="">
+					</div>
+					<button id="btnSubmit" class="btn btn-info">提交</button>
+					
+					<div id="infoDiv" style="margin-top: 20px"></div>
+				  </div>
+				</div>
+            </div>
+            <!-- <p id="back-top">
+		      <a id="toTop" href="javascript:void(0);">
+		         <span></span>
+		      </a>
+	        </p> -->
+         </div>
+      
+       </div>
+      </div><!-- wrap -->
+      
+      <div id="footer">
+         <div class="container">
+	        <p class="muted credit">
+	            Selwyn Shen <a href="mailto:selwynshen@gmail.com">selwynshen@gmail.com</a>
+	         </p>
+         </div>
+      </div>
+  </body>
+  
+  <script src="/lib/bootstrap/jquery-1.9.1.min.js"></script>
+  
+  <script src="/lib/bootstrap/bootstrap-alert.js"></script>
+  <script src="/lib/bootstrap/bootstrap-transition.js"></script>
+  <script src="/lib/bootstrap/bootstrap-modal.js"></script>
+  <script src="/lib/bootstrap/bootstrap-dropdown.js"></script>
+  <script src="/lib/bootstrap/bootstrap-button.js"></script>
+  <script src="/lib/bootstrap/bootstrap-collapse.js"></script>
+  <script src="/lib/bootstrap/bootstrap-carousel.js"></script>
+  
+  <script type="text/javascript" src="/lib/ajaxTool/ajaxTool.js"></script>
+  <script type="text/javascript">
+  function getAlertHTML(level, msg)
+  {
+	var html = "<div class=\"alert ";
+	if (level == 0)
+	{
+		html += "alert-success";
+	}
+	else if (level == 1)
+	{
+		html += "alert-info";
+	}
+	else if (level == 2)
+	{
+		html += "alert-error";
+	}
+	html += "\"><a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>";
+	html += msg;
+	html += "</div>";
+	return html;
+  }
+  function fillMusicFileName()
+  {
+	  var directory = $("#directory").val();
+	  if (!directory)
+	  {
+		  $("#infoDiv").html(getAlertHTML(2, "目录不能为空！"));
+		  return;
+	  }
+	  $.fn.ajaxtool({
+		  url: "/music/file/names/",
+		  data: {"directory": directory},
+		  dataType: 'json',
+		  sFunc: function(data){
+			  //alert(data);
+			  var isOK = data.success;
+			  var html = "";
+			  if (isOK)
+			  {
+                  html += "重命名成功!";
+			      if (data.data)
+                  {
+                      $.each(data.data, function(index, ele) {
+                          html = html + "<br/>" + ele["prevFileName"] + " -> " + ele["newFileName"];
+                      });
+                  }
+				  html = getAlertHTML(0, html);
+			  }else{
+                  html = getAlertHTML(2, data.message);
+			  }
+			  $("#infoDiv").html(html);
+		  }
+	  });
+  }
+
+  $(function(){
+	 $("#btnSubmit").click(function(){
+         fillMusicFileName();
+	 });
+  });
+
+  </script>
+</html>
