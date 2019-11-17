@@ -19,4 +19,10 @@ public class MusicUtil {
         exts.add("ape");
         return exts;
     }
+
+    public static ArrayList<String> getDefaultLyricExtensions() {
+        ArrayList<String> exts = new ArrayList<>();
+        exts.add("lrc");
+        return exts;
+    }
 }

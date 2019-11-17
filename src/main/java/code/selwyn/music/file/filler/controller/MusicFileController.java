@@ -23,13 +23,13 @@ import java.util.List;
  */
 @RestController
 @Slf4j
-@RequestMapping("/music/file/names")
+@RequestMapping("/music/file")
 public class MusicFileController {
 
     @Autowired
     private MusicNameHandler musicNameHandler;
 
-    @PostMapping("/")
+    @PostMapping("/names")
     public Result<List<FillingResult>> doFilling(@ModelAttribute("directory")String directory) throws Exception
     {
         List<FillingResult> fillingResultList = this.musicNameHandler.handleMusicName(directory);
